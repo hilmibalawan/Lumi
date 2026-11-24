@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Last Pilgrimage</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#e8b863;--glow:#ffd98a;--paper:#f3e6c8;--night:#0b1226;--deep:#141c3d;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{height:100%;margin:0;background:#05081a}
+body{display:flex;align-items:center;justify-content:center;font-family:Lato,"Segoe UI",sans-serif;color:var(--paper);overflow:hidden}
+#stage{position:relative;container-type:inline-size;width:min(100vw,calc(100vh*16/9));aspect-ratio:16/9;background:var(--night);overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:.2cqw solid var(--glow);outline-offset:.2cqw}
+.hd,h1,h3{font-family:Cinzel,Georgia,serif}
+#top{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:1.2cqw;padding:1.2cqw 2.4cqw;z-index:6}
+#top svg{width:6.6cqw;height:6.6cqw;flex:none}
+.sp{flex:1}
+.ib{width:4.2cqw;height:4.2cqw;border-radius:50%;border:.15cqw solid var(--gold);background:rgba(11,18,38,.65);color:var(--gold);font-size:2cqw;line-height:1;padding:0}
+#skor{border:.15cqw solid var(--gold);border-radius:3cqw;padding:.7cqw 2cqw;font:700 1.5cqw Cinzel,serif;background:rgba(11,18,38,.75);min-width:13cqw;letter-spacing:.08em}
+#nav{position:absolute;left:2.4cqw;right:2.4cqw;bottom:1.6cqw;display:flex;background:rgba(8,12,30,.9);border-top:.1cqw solid rgba(232,184,99,.5);border-bottom:.1cqw solid rgba(232,184,99,.5);z-index:6}
+#nav button{flex:1;background:none;border:0;border-right:.1cqw solid rgba(232,184,99,.2);padding:.8cqw .3cqw;display:flex;flex-direction:column;align-items:center;gap:.2cqw}
+#nav button:last-child{border-right:0}
+#nav i{font-style:normal;color:var(--gold);font-size:1.7cqw;line-height:1}
+#nav b{font-size:1.15cqw}#nav small{font-size:.85cqw;opacity:.65}
+#nav button.on{background:rgba(255,255,255,.08);box-shadow:inset 0 -.25cqw var(--gold)}
+#nav button:hover{background:rgba(255,255,255,.06)}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:9cqw 3cqw 8.5cqw;z-index:2}
+.scr[hidden]{display:none}
+.card{position:relative;width:62cqw;padding:2.2cqw 3cqw;background:rgba(12,18,46,.84);border:.1cqw solid rgba(232,184,99,.35);text-align:left}
+.card::before,.card::after{content:"";position:absolute;width:2cqw;height:2cqw;border:.25cqw solid var(--gold)}
+.card::before{left:-.2cqw;top:-.2cqw;border-right:0;border-bottom:0}.card::after{right:-.2cqw;bottom:-.2cqw;border-left:0;border-top:0}
+.card h3{margin:0 0 1.2cqw;padding-bottom:1cqw;border-bottom:.1cqw solid rgba(232,184,99,.4);font-size:2cqw;color:var(--gold);font-weight:500}
+.card p,.card li{font-size:1.55cqw;line-height:1.6;margin:0 0 .8cqw}
+.card ul{margin:0;padding-left:2cqw}
+.row{display:flex;gap:2.4cqw;width:86cqw}.row .card{flex:1;width:auto}
+h1{margin:0;font-size:5.6cqw;font-weight:500;letter-spacing:.07em;color:#fff3da;text-shadow:0 0 2cqw rgba(255,200,100,.6)}
+.sub{font:500 1.9cqw Cinzel,serif;letter-spacing:.3em;color:var(--glow);margin:.8cqw 0 2.4cqw}
+#cbs{display:flex;gap:1.6cqw}
+.cb{width:12cqw;padding:1.3cqw .6cqw;background:rgba(11,18,38,.72);border:.12cqw solid var(--gold);font-size:1.3cqw;line-height:1.3}
+.cb i{display:block;font-style:normal;font-size:2.6cqw;color:var(--gold);margin-bottom:.4cqw}
+.cb:hover{background:rgba(232,184,99,.22)}
+.btn{margin-top:2cqw;font:700 1.5cqw Cinzel,serif;padding:.9cqw 3cqw;border:.15cqw solid var(--gold);background:rgba(11,18,38,.8);border-radius:5cqw;letter-spacing:.08em}
+.btn:hover{background:var(--gold);color:var(--night)}
+#start{animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 2cqw rgba(255,200,100,.7)}}
+@media(prefers-reduced-motion:reduce){#start{animation:none}}
+#cp{position:absolute;inset:auto;z-index:4;width:62cqw}
+#cp[hidden]{display:none}
+#cp .btn{margin:1cqw 0 0}
+#map{justify-content:flex-start;padding-top:8cqw}
+#map h3{margin:0;font-size:2.6cqw;color:var(--glow);font-weight:700;text-shadow:0 0 1.4cqw rgba(255,200,100,.5)}
+#map .tag{font-size:1.6cqw;color:var(--gold);margin-top:.5cqw}
+#mapbox{position:relative;width:92%;flex:1;margin-top:.5cqw}
+#mapbox svg{position:absolute;inset:0;width:100%;height:100%}
+.node{position:absolute;transform:translate(-50%,-50%);background:none;border:0;text-align:center;width:16cqw}
+.node i{display:grid;place-items:center;width:5.6cqw;height:5.6cqw;margin:0 auto;border-radius:50%;border:.3cqw solid var(--gold);background:var(--deep);font:700 2.4cqw Cinzel,serif;font-style:normal;box-shadow:0 0 1.6cqw rgba(232,184,99,.5)}
+.node b{display:block;font-size:1.25cqw;margin-top:.5cqw;text-shadow:0 0 .6cqw #000}
+.node span{font-size:1.3cqw;color:var(--gold);text-shadow:0 0 .6cqw #000}
+.node:disabled{opacity:.4;cursor:not-allowed}
+.node:not(:disabled):hover i{background:var(--gold);color:var(--night)}
+#soal input{width:100%;box-sizing:border-box;font:700 2cqw Cinzel,serif;letter-spacing:.3em;text-align:center;padding:.8cqw;background:rgba(5,8,26,.8);border:.12cqw solid var(--gold);color:var(--glow)}
+#err{color:#ff9aa5;font-size:1.4cqw;min-height:2cqw;margin:.6cqw 0 0}
+#hud{display:none;position:absolute;left:0;right:0;top:8.4cqw;justify-content:space-between;padding:0 3cqw;font:500 1.7cqw Cinzel,serif;color:var(--glow);pointer-events:none;z-index:3;text-shadow:0 0 .6cqw #000}
+#stage[data-m=play] #hud{display:flex}
+#stage[data-m=play] #nav{display:none}
+#toast{position:absolute;left:50%;top:12.5cqw;transform:translateX(-50%);width:max-content;max-width:66cqw;text-align:center;font-size:1.6cqw;line-height:1.5;background:rgba(11,18,38,.9);border:.12cqw solid var(--gold);padding:.9cqw 2cqw;opacity:0;transition:opacity .3s;pointer-events:none;z-index:7}
+#toast.on{opacity:1}
+#tc{display:none;position:absolute;left:0;right:0;bottom:2cqw;padding:0 3cqw;justify-content:space-between;z-index:5}
+#tc div{display:flex;gap:2cqw}
+#tc button{width:10cqw;height:10cqw;border-radius:50%;border:.3cqw solid var(--gold);background:rgba(11,18,38,.6);font-size:4cqw}
+@media(pointer:coarse){#stage[data-m=play] #tc{display:flex}}
+#qo{display:flex;flex-direction:column;gap:.8cqw;margin:1.2cqw 0}
+#qo button{font-size:1.5cqw;padding:.8cqw 1.4cqw;text-align:left;background:rgba(11,18,38,.75);border:.12cqw solid var(--gold)}
+#qo button:not(:disabled):hover{background:rgba(232,184,99,.25)}
+#qo .ok{background:#2d6a4f;border-color:#95d5b2}#qo .no{background:#7a2e3a;border-color:#e5989b}
+#qx{color:var(--glow)}
+@media(max-width:600px) and (orientation:portrait){#stage::after{content:"Putar layar ke mode landscape";position:absolute;left:0;right:0;bottom:0;text-align:center;font-size:3.2cqw;background:var(--gold);color:var(--night);padding:1cqw;z-index:9}}
+</style>
+</head>
+<body>
+<div id="stage" data-m="home">
+<canvas id="c" width="960" height="540"></canvas>
+
+<header id="top">
+<svg viewBox="0 0 100 100" aria-label="Logo Phaethon"><circle cx="50" cy="50" r="34" fill="#0b1226" stroke="#e8b863" stroke-width="5"/><path d="M62 24a30 30 0 0 1 8 14" stroke="#ffd98a" stroke-width="3" fill="none"/><path d="M50 6v88" stroke="#ffd98a" stroke-width="4"/></svg>
+<div class="sp"></div>
+<button class="ib" id="bpin" aria-label="Peta perjalanan" title="Peta perjalanan">⌖</button>
+<button class="ib" id="bsnd" aria-label="Suara" title="Suara">♪</button>
+<div id="skor">SKOR: <span id="sk">0</span></div>
+</header>
+
+<section class="scr" id="home">
+<h1>The Last Pilgrimage</h1>
+<div class="sub">KONSEP DASAR SEJARAH</div>
+<div id="cbs"></div>
+<button class="btn" id="start">Mulai perjalanan</button>
+<div class="card" id="cp" hidden><h3 id="cpt"></h3><ul id="cpl"></ul><button class="btn" id="cpx">Tutup</button></div>
+</section>
+
+<section class="scr" id="goal" hidden><div class="row">
+<div class="card"><h3>Mengapa kita harus mempelajari konsep dasar sejarah</h3><p>Mempelajari fondasi sejarah sangat penting untuk melatih kemampuan berpikir kritis agar kita bisa mengambil keputusan bijak dari pengalaman masa lalu. Selain itu, memahami metode penelitian akan mengubah kita menjadi “detektif informasi” yang tidak mudah percaya hoaks dan mahir memvalidasi kebenaran data di era digital.</p></div>
+<div class="card"><h3>Apa yang akan dikuasai</h3><p>Melalui game ini, kita akan menguasai keahlian berpikir diakronik untuk melihat pola perubahan serta perkembangan dunia dari waktu ke waktu secara kronologis. Kita juga akan menguasai konsep sinkronik yang melatih kita membedah suatu peristiwa secara mendalam dari berbagai sudut pandang, baik sosial, ekonomi, maupun politik.</p></div>
+</div></section>
+
+<section class="scr" id="guide" hidden><div class="card"><h3>Cara bermain</h3>
+<p>Di sepanjang permainan pemain akan menemukan banyak sekali petunjuk tentang soal-soal. Pemain diharuskan menemukan 5 jawaban dari 5 pertanyaan melalui petunjuk-petunjuk tersebut. Setelah berhasil menjawab 5 pertanyaan, ia akan mendapatkan password untuk melanjutkan ke tes yang sesungguhnya.</p>
+<p><b>Kontrol.</b> Bergerak dengan panah atau A/D, lompat dengan spasi, panah atas, atau W. Di HP, pakai tombol di layar. Ambil kepingan bercahaya, hindari bayangan gelap, lalu masuk ke gerbang di ujung tahap. Tombol pin di pojok atas membawamu kembali ke peta.</p></div></section>
+
+<section class="scr" id="impl" hidden><div class="card"><h3>Implementasi nyata</h3>
+<p>Implementasi nyata konsep sejarah terlihat saat kita menelusuri silsilah keluarga untuk menjaga identitas diri, serta menerapkan cara berpikir diakronik saat mengamati evolusi teknologi komunikasi dari era surat hingga ponsel pintar secara kronologis. Selain itu, kita menggunakan konsep sinkronik saat membedah secara mendalam dampak ekonomi dan sosial dari krisis moneter 1998, yang ditutup dengan penerapan metode penelitian sejarah dalam kehidupan sehari-hari ketika kita memvalidasi kebenaran berita viral di media sosial melalui pengecekan sumber asli agar terhindar dari hoaks.</p></div></section>
+
+<section class="scr" id="map" hidden>
+<h3>Peta Perjalanan</h3>
+<div class="tag">★ <span id="tot">0/30</span> &nbsp;·&nbsp; Huruf password: <span id="pw">_ _ _ _ _</span></div>
+<div id="mapbox"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline id="path" fill="none" stroke="#e8b863" stroke-width="1.4" stroke-dasharray="3 3" vector-effect="non-scaling-stroke" opacity=".7"/></svg><div id="nodes"></div></div>
+</section>
+
+<section class="scr" id="soal" hidden><div class="card"><h3>Soal</h3>
+<p>Masukkan password:</p><input id="pwi" type="text" maxlength="12" autocomplete="off" aria-label="Password" placeholder="_ _ _ _ _">
+<div id="err"></div><button class="btn" id="go" style="margin-top:.6cqw">Buka soal</button>
+<p style="margin:1.2cqw 0 0;opacity:.7;font-size:1.3cqw">Password didapat dari 5 huruf di gerbang tiap tahap Gameplay.</p></div></section>
+
+<section class="scr" id="prof" hidden><div class="card"><h3>Profil pengembang</h3>
+<p><b>Hilmi Balawan</b>, kelas X RPL</p>
+<p>Phaethon Game Production. Phaethon berarti “bersinar” dalam bahasa Yunani: visi kami menghadirkan game yang imersif dan kaya narasi.</p></div></section>
+
+<section class="scr" id="quiz" hidden><div class="card"><h3 id="qh"></h3><p id="qq"></p><div id="qo"></div><p id="qx" hidden></p><button class="btn" id="qn" hidden style="margin-top:.4cqw">Lanjut</button></div></section>
+
+<div id="hud"><span id="hl"></span><span id="hh"></span><span id="hs"></span></div>
+<div id="toast" role="status"></div>
+<nav id="nav" aria-label="Menu utama"></nav>
+<div id="tc"><div><button id="bl" aria-label="Kiri">◀</button><button id="br" aria-label="Kanan">▶</button></div><button id="bj" aria-label="Lompat">▲</button></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),cv=$('#c'),ctx=cv.getContext('2d'),W=3700,GY=440,PW='TAPAK';
+const L=[
+{n:"Pengertian Sejarah",c:["#0e1633","#c0703f"],q:"Sejarah paling tepat diartikan sebagai…",o:["Kumpulan dongeng yang diwariskan turun-temurun","Peristiwa masa lalu manusia yang disusun berdasarkan bukti","Ramalan tentang apa yang terjadi di masa depan"],a:1,e:"Sejarah dibangun dari bukti. Tanpa bukti, cerita masa lalu hanya dugaan.",
+f:["Kata sejarah berakar dari syajarah (Arab) yang berarti pohon: silsilah yang bercabang.","Sejarah adalah peristiwa masa lalu manusia yang disusun berdasarkan bukti.","Tanpa bukti, cerita masa lalu hanya dugaan, bukan sejarah.","Sejarah meneliti perbuatan manusia. Zaman sebelum ada tulisan disebut prasejarah.","Mempelajari sejarah membantu kita memahami jati diri dan akar bangsa."]},
+{n:"Konsep Diakronik",c:["#101a3a","#9a5f82"],q:"Konsep diakronik melihat peristiwa secara…",o:["Meluas pada satu waktu tertentu","Memanjang mengikuti waktu, dari masa ke masa","Hanya dari sudut pandang satu tokoh"],a:1,e:"Diakronik menelusuri proses dan perubahan secara kronologis.",
+f:["Diakronik: dia berarti melintasi, kronos berarti waktu. Peristiwa dilihat memanjang dalam waktu.","Ciri diakronik: kronologis, menekankan proses dan perubahan.","Contoh: alat komunikasi berkembang dari surat, telegram, telepon, hingga ponsel pintar.","Pertanyaan khas diakronik: bagaimana sesuatu berubah dari masa ke masa?","Menelusuri silsilah keluarga juga cara berpikir diakronik."]},
+{n:"Konsep Sinkronik",c:["#0d2236","#d08a45"],q:"Mengkaji krisis moneter 1998 dari sisi ekonomi, sosial, dan politik pada masa itu termasuk konsep…",o:["Diakronik","Sinkronik","Mitologi"],a:1,e:"Sinkronik meluas pada satu waktu dan menganalisis keterkaitan antaraspek.",
+f:["Sinkronik: sin berarti bersama, kronos berarti waktu. Peristiwa dilihat meluas pada satu waktu.","Ciri sinkronik: analitis, menekankan struktur dan keterkaitan antaraspek.","Contoh: krisis moneter 1998 dikaji dari sisi ekonomi, sosial, dan politik.","Pertanyaan khas sinkronik: apa saja yang saling memengaruhi pada saat itu?","Diakronik dan sinkronik saling melengkapi, seperti garis dan bidang."]},
+{n:"Tahap Penelitian",c:["#171538","#b9604f"],q:"Memeriksa keaslian dan kebenaran isi sumber sejarah disebut tahap…",o:["Heuristik","Kritik sumber","Historiografi"],a:1,e:"Urutannya: heuristik, kritik sumber, interpretasi, historiografi.",
+f:["Tahap 1, heuristik: mencari dan mengumpulkan sumber sejarah.","Tahap 2, kritik sumber: menguji keaslian (ekstern) dan kebenaran isi (intern).","Tahap 3, interpretasi: menafsirkan dan menghubungkan fakta.","Tahap 4, historiografi: menuliskan hasil penelitian menjadi kisah sejarah.","Urutannya: heuristik, kritik sumber, interpretasi, historiografi."]},
+{n:"Implementasi Nyata",c:["#0a1030","#e0a050"],q:"Sebuah berita viral muncul di media sosial. Langkah terbaik menurut metode sejarah adalah…",o:["Langsung membagikannya karena banyak yang menyukai","Menelusuri sumber aslinya dan membandingkan dengan sumber lain","Mempercayainya jika ditulis dengan huruf kapital"],a:1,e:"Kritik sumber melindungi kita dari hoaks.",
+f:["Berita viral perlu diuji dulu sebelum dibagikan.","Cari sumber aslinya: siapa penulisnya, kapan, dan di mana dipublikasikan.","Bandingkan dengan sumber lain yang independen.","Cek apakah isinya masuk akal dan sesuai waktu kejadiannya.","Kritik sumber melindungi kita dari hoaks."]}
+];
+const T=[
+{q:"Mengamati perkembangan telepon dari masa ke masa adalah contoh pendekatan…",o:["Sinkronik","Diakronik","Heuristik"],a:1,e:"Perubahan dari waktu ke waktu adalah ciri diakronik."},
+{q:"Tahap pertama dalam penelitian sejarah adalah…",o:["Historiografi","Interpretasi","Heuristik"],a:2,e:"Heuristik: mencari dan mengumpulkan sumber."},
+{q:"Mengkaji kondisi sosial, ekonomi, dan politik suatu masa secara bersamaan merupakan ciri konsep…",o:["Sinkronik","Diakronik","Kronologis"],a:0,e:"Sinkronik meluas pada satu waktu."},
+{q:"Menuliskan hasil penelitian menjadi kisah sejarah disebut…",o:["Kritik ekstern","Heuristik","Historiografi"],a:2,e:"Historiografi adalah tahap penulisan sejarah."},
+{q:"Mengapa kritik sumber penting saat menerima berita viral?",o:["Agar berita lebih cepat menyebar","Agar terhindar dari hoaks","Agar berita terlihat menarik"],a:1,e:"Menguji sumber mencegah kita percaya hoaks."}
+];
+const S=L.map(()=>({r:0,q:0,d:0}));let best=0,g=null,K={},snd=1,AC,mlv=0;
+const tot=()=>S.reduce((a,s)=>a+s.r+s.q,0),POS=[[12,62],[31,36],[50,62],[69,34],[88,56]];
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* ---------- screens ---------- */
+const N=[['home','Beranda','Halaman utama','⌂'],['goal','Tujuan Pembelajaran','Kompetensi yang dicapai','◎'],['guide','Panduan Game','Cara bermain','✥'],['impl','Implementasi Nyata','Sejarah dalam kehidupan','▥'],['map','Gameplay','Jelajahi dan pelajari','✧'],['soal','Soal','Uji pemahaman','☰'],['prof','Profil Pengembang','Tentang pembuat game','♙']];
+N.forEach(([id,t,s,ic])=>{const b=document.createElement('button');b.dataset.s=id;b.innerHTML='<i>'+ic+'</i><b>'+t+'</b><small>'+s+'</small>';b.onclick=()=>go(id);$('#nav').appendChild(b)});
+[[0,'Pengertian Sejarah','▤'],[1,'Konsep Diakronik','◷'],[3,'Tahap Penelitian Sejarah','⌕'],[2,'Konsep Sinkronik','⟳']].forEach(([k,t,ic])=>{const b=document.createElement('button');b.className='cb';b.innerHTML='<i>'+ic+'</i>'+t;
+ b.onclick=()=>{$('#cpt').textContent=t;$('#cpl').innerHTML=L[k].f.map(x=>'<li>'+x+'</li>').join('');$('#cp').hidden=false;$('#cpx').focus()};$('#cbs').appendChild(b)});
+$('#cpx').onclick=()=>$('#cp').hidden=true;
+function sk(){$('#sk').textContent=tot()*10+best*20}
+function show(id){document.querySelectorAll('.scr').forEach(e=>e.hidden=e.id!==id);$('#stage').dataset.m=id||'play';
+ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.s===(id==='quiz'?'map':id)));sk()}
+function go(id){g=null;K={};$('#cp').hidden=true;$('#err').textContent='';if(id==='map')map();else show(id)}
+function toast(t,ms){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.remove('on'),ms||4200)}
+function sfx(f,d){if(!snd)return;d=d||.12;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),v=AC.createGain();o.frequency.value=f;v.gain.value=.05;o.connect(v);v.connect(AC.destination);o.start();v.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.stop(AC.currentTime+d)}catch(e){}}
+
+function map(){
+ show('map');$('#tot').textContent=tot()+'/30';$('#pw').textContent=[...PW].map((c,i)=>S[i].d?c:'_').join(' ');
+ $('#path').setAttribute('points',POS.map(p=>p.join(',')).join(' '));
+ const n=$('#nodes');n.innerHTML='';
+ L.forEach((l,i)=>{const b=document.createElement('button');b.className='node';b.style.left=POS[i][0]+'%';b.style.top=POS[i][1]+'%';
+  b.disabled=i>0&&!S[i-1].d;b.innerHTML='<i>'+(i+1)+'</i><b>'+l.n+'</b><span>★ '+(S[i].r+S[i].q)+'/6'+(S[i].d?' · '+PW[i]:'')+'</span>';
+  b.onclick=()=>play(i);n.appendChild(b)});
+}
+
+/* ---------- quiz ---------- */
+function ask(q,head,cb,retry){
+ const o=$('#qo');show('quiz');$('#qh').textContent=head;$('#qq').textContent=q.q;o.innerHTML='';$('#qx').hidden=true;$('#qn').hidden=true;let tries=0;
+ const fin=()=>{o.querySelectorAll('button').forEach((x,j)=>{x.disabled=true;if(j===q.a)x.className='ok'});$('#qn').hidden=false;$('#qn').textContent='Lanjut';$('#qn').onclick=()=>cb(tries===1)};
+ q.o.forEach((t,k)=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>{tries++;
+  if(k===q.a){sfx(660);$('#qx').textContent='Benar. '+q.e;$('#qx').hidden=false;fin()}
+  else{sfx(150,.25);b.className='no';b.disabled=true;
+   if(retry){$('#qx').textContent='Belum tepat. Baca lagi petunjuk yang kamu temukan, lalu coba pilihan lain.';$('#qx').hidden=false}
+   else{$('#qx').textContent='Belum tepat. '+q.e;$('#qx').hidden=false;fin()}}};o.appendChild(b)});
+}
+function gate(){
+ const lv=g.lv;ask(L[lv],'Gerbang Rumah Sejarah',first=>{S[lv].d=1;S[lv].q=Math.max(S[lv].q,first?1:0);map();sfx(784,.3);
+  toast('Huruf password: '+PW[lv]+(S.every(s=>s.d)?'. Semua huruf terkumpul. Buka menu Soal.':''),4500)},true);
+}
+function test(){let i=0,sc=0;const nx=()=>{if(i<T.length)ask(T[i],'Soal '+(i+1)+'/'+T.length,ok=>{if(ok)sc++;i++;nx()},false);
+ else{best=Math.max(best,sc);sk();show('quiz');$('#qh').textContent='Hasil tes';$('#qq').textContent='Skor tes: '+sc+' dari '+T.length;$('#qo').innerHTML='';$('#qx').textContent=sc===T.length?'Sempurna. Kamu menguasai konsep dasar sejarah.':'Ulangi petunjuk di Gameplay untuk memperbaiki skormu.';$('#qx').hidden=false;$('#qn').hidden=false;$('#qn').textContent='Kembali ke beranda';$('#qn').onclick=()=>go('home')}};nx()}
+$('#go').onclick=()=>{if($('#pwi').value.trim().toUpperCase()===PW){$('#pwi').value='';test()}else{$('#err').textContent='Password salah. Selesaikan 5 tahap di Gameplay untuk mendapatkan 5 hurufnya.'}};
+$('#pwi').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')$('#go').click()});
+
+/* ---------- game ---------- */
+function build(i){
+ let s=i*97+13;const r=()=>(s=(s*16807)%2147483647)/2147483647;
+ const P=[];for(let k=0;k<8;k++)P.push({x:380+k*400+r()*50,y:(310+r()*60)|0,w:(130+r()*40)|0});
+ const R=[0,2,3,5,7].map(k=>({x:P[k].x+P[k].w/2,y:P[k].y-40,got:0}));
+ const E=[];for(let k=0;k<6;k++)E.push({x0:700+k*520,r:110,s:.012+i*.003+k*.001,x:0,y:0});
+ return{lv:i,x:80,y:GY,vx:0,vy:0,on:1,f:1,cam:0,lives:3,inv:0,P,R,E,t:0,got:0,run:1};
+}
+function hud(){$('#hl').textContent='Tahap '+(g.lv+1)+': '+L[g.lv].n;$('#hh').textContent='♥'.repeat(g.lives)+'♡'.repeat(3-g.lives);$('#hs').textContent='Petunjuk '+g.got+'/5'}
+function play(i){document.activeElement&&document.activeElement.blur();g=build(i);mlv=i;show('');hud();toast('Kumpulkan 5 petunjuk, lalu masuk ke gerbang. Petunjuk akan membantumu menjawab soal.',4000)}
+function step(d){
+ const dir=(K.r?1:0)-(K.l?1:0);g.vx=dir*3.8;if(dir)g.f=dir;g.t+=d;
+ if(K.j&&g.on){g.vy=-13.2;g.on=0}
+ if(g.inv>0)g.inv-=d;
+ const py=g.y;g.vy+=.62*d;g.x=Math.max(20,Math.min(W-20,g.x+g.vx*d));g.y+=g.vy*d;g.on=0;
+ if(g.y>=GY){g.y=GY;g.vy=0;g.on=1}
+ else if(g.vy>=0)for(const p of g.P)if(g.x>p.x-8&&g.x<p.x+p.w+8&&py<=p.y&&g.y>=p.y){g.y=p.y;g.vy=0;g.on=1}
+ g.cam=Math.max(0,Math.min(W-960,g.x-380));
+ g.R.forEach((r,k)=>{if(!r.got&&Math.hypot(g.x-r.x,g.y-22-r.y)<32){r.got=1;g.got++;hud();sfx(880);toast('Petunjuk '+g.got+'/5: '+L[g.lv].f[k])}});
+ g.E.forEach((e,k)=>{e.x=e.x0+Math.sin(g.t*e.s*3+k)*e.r;e.y=424+Math.sin(g.t*.06+k)*6;
+  if(g.inv<=0&&Math.abs(g.x-e.x)<22&&g.y>e.y-14&&g.y-44<e.y+14){g.lives--;g.inv=100;sfx(150,.25);hud();
+   if(g.lives<=0){const lv=g.lv;g=build(lv);hud();toast('Cahaya padam. Mulai lagi dari awal tahap.',2500)}}});
+ if(g.x>W-170){g.run=0;S[g.lv].r=Math.max(S[g.lv].r,g.got);gate()}
+}
+
+/* ---------- drawing ---------- */
+const lay=(n,wmin,wv,hmin,hv,seed)=>{let s=seed;const r=()=>(s=(s*16807)%2147483647)/2147483647;return Array.from({length:n},(_,k)=>({x:k*1600/n+r()*30,w:wmin+r()*wv,h:hmin+r()*hv,s:r()*40-10}))};
+const FAR=lay(16,60,50,80,120,7),NEAR=lay(10,90,70,110,150,11);
+const fx=Array.from({length:26},()=>({x:Math.random()*960,y:Math.random()*430,p:Math.random()*6}));
+function layer(cam,f,col,arr,base){ctx.fillStyle=col;const off=-(cam*f)%1600;
+ for(const o of[off,off+1600])for(const b of arr){const x=b.x+o;if(x>960||x+b.w<0)continue;ctx.beginPath();ctx.moveTo(x,base);ctx.lineTo(x,base-b.h);ctx.lineTo(x+b.w,base-b.h+b.s);ctx.lineTo(x+b.w,base);ctx.fill()}}
+function scene(cam,l){
+ const gr=ctx.createLinearGradient(0,0,0,GY);gr.addColorStop(0,l.c[0]);gr.addColorStop(1,l.c[1]);ctx.fillStyle=gr;ctx.fillRect(0,0,960,540);
+ const sg=ctx.createRadialGradient(720,340,10,720,340,230);sg.addColorStop(0,'rgba(255,225,150,.95)');sg.addColorStop(.25,'rgba(255,190,110,.45)');sg.addColorStop(1,'rgba(255,190,110,0)');ctx.fillStyle=sg;ctx.fillRect(0,0,960,540);
+ ctx.fillStyle='#ffe3a0';ctx.beginPath();ctx.arc(720,340,46,0,7);ctx.fill();
+ layer(cam,.2,'#1d2347',FAR,GY+4);layer(cam,.5,'#0f1430',NEAR,GY+4);
+ ctx.fillStyle='#070a1c';ctx.fillRect(0,GY,960,100);ctx.fillStyle='#e8b863';ctx.fillRect(0,GY,960,2);
+ ctx.fillStyle='rgba(255,220,140,.8)';for(const f of fx){if(!RM){f.p+=.02;f.x+=Math.sin(f.p)*.4-.1;f.y+=Math.cos(f.p*.8)*.3;if(f.x<0)f.x=960}ctx.beginPath();ctx.arc(f.x,f.y,1.6,0,7);ctx.fill()}
+}
+function kira(sx,y){
+ const m=Math.abs(g.vx)>0&&g.on,sw=m?Math.sin(g.t*.4)*7:0;
+ ctx.save();ctx.translate(sx,y);ctx.scale(g.f,1);if(g.inv>0&&((g.inv/6)|0)%2)ctx.globalAlpha=.4;
+ ctx.fillStyle='#2b4a8a';ctx.beginPath();ctx.moveTo(-6,-36);ctx.quadraticCurveTo(-26+Math.sin(g.t*.2)*3,-20,-18,-6-(g.on?0:6));ctx.lineTo(-4,-8);ctx.fill();
+ ctx.strokeStyle='#e9d5a8';ctx.lineWidth=4;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-3,-12);ctx.lineTo(-3+sw,-1);ctx.moveTo(4,-12);ctx.lineTo(4-sw,-1);ctx.stroke();
+ ctx.fillStyle='#f4f1ec';ctx.beginPath();ctx.moveTo(-8,-36);ctx.lineTo(8,-36);ctx.lineTo(11,-10);ctx.lineTo(-11,-10);ctx.fill();
+ ctx.fillStyle='#3b63b8';ctx.fillRect(-8,-36,16,13);ctx.fillStyle='#e8b863';ctx.fillRect(-11,-12,22,2.5);ctx.fillRect(-8,-24,16,2);
+ ctx.fillStyle='#f0c9a0';ctx.beginPath();ctx.arc(1,-43,8,0,7);ctx.fill();
+ ctx.fillStyle='#6b4226';ctx.beginPath();ctx.arc(0,-45,9,Math.PI*.95,Math.PI*2.1);ctx.lineTo(-9,-34);ctx.lineTo(-7,-42);ctx.fill();
+ ctx.fillStyle='#6fb3ff';ctx.beginPath();ctx.arc(-4,-51,3.5,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.fillRect(5,-44,2,2.5);
+ ctx.restore();
+}
+function draw(){
+ const c=g.cam;scene(c,L[g.lv]);
+ const gx=W-120-c;ctx.fillStyle='#0b1026';ctx.fillRect(gx-50,GY-110,100,110);ctx.beginPath();ctx.moveTo(gx-66,GY-110);ctx.lineTo(gx,GY-160);ctx.lineTo(gx+66,GY-110);ctx.fill();
+ const dg=ctx.createRadialGradient(gx,GY-40,4,gx,GY-40,60);dg.addColorStop(0,'#ffe3a0');dg.addColorStop(1,'rgba(255,200,100,0)');ctx.fillStyle=dg;ctx.fillRect(gx-60,GY-100,120,100);
+ ctx.fillStyle='#e8b863';ctx.fillRect(gx-66,GY-112,132,3);
+ for(const p of g.P){const x=p.x-c;ctx.fillStyle='#10152e';ctx.fillRect(x,p.y,p.w,14);ctx.fillStyle='#e8b863';ctx.fillRect(x,p.y,p.w,2)}
+ for(const r of g.R){if(r.got)continue;const x=r.x-c,y=r.y+Math.sin(g.t*.06+r.x)*4;
+  const rg=ctx.createRadialGradient(x,y,2,x,y,26);rg.addColorStop(0,'rgba(255,225,150,.9)');rg.addColorStop(1,'rgba(255,200,100,0)');ctx.fillStyle=rg;ctx.fillRect(x-26,y-26,52,52);
+  ctx.fillStyle='#f3e6c8';ctx.fillRect(x-9,y-7,18,14);ctx.fillStyle='#b5683f';ctx.fillRect(x-9,y-7,3,14);ctx.fillStyle='#e8b863';ctx.fillRect(x-4,y-3,10,2);ctx.fillRect(x-4,y+2,7,2)}
+ for(const e of g.E){const x=e.x-c;if(x<-40||x>1000)continue;ctx.fillStyle='rgba(40,20,70,.95)';ctx.beginPath();ctx.arc(x,e.y,15,0,7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(x-15,e.y);ctx.lineTo(x-10,e.y+22);ctx.lineTo(x-3,e.y+14);ctx.lineTo(x+4,e.y+22);ctx.lineTo(x+15,e.y);ctx.fill();
+  ctx.fillStyle='#ff7a7a';ctx.fillRect(x-7,e.y-4,4,4);ctx.fillRect(x+3,e.y-4,4,4)}
+ kira(g.x-c,g.y);
+}
+let last=0;
+function frame(t){requestAnimationFrame(frame);
+ if(g){if(g.run){const d=Math.min(2,(t-last)/16.67||1);step(d);if(g&&g.run)draw()}}
+ else scene(RM?0:t*.015,L[0]);
+ last=t}
+requestAnimationFrame(frame);
+
+/* ---------- input ---------- */
+const km={ArrowLeft:'l',a:'l',A:'l',ArrowRight:'r',d:'r',D:'r',ArrowUp:'j',w:'j',W:'j',' ':'j'};
+addEventListener('keydown',e=>{const k=km[e.key];if(k&&g&&g.run){K[k]=1;e.preventDefault()}});
+addEventListener('keyup',e=>{const k=km[e.key];if(k)K[k]=0});
+addEventListener('blur',()=>K={});
+[['bl','l'],['br','r'],['bj','j']].forEach(([id,k])=>{const b=$('#'+id);
+ b.addEventListener('pointerdown',e=>{e.preventDefault();K[k]=1});
+ ['pointerup','pointercancel','pointerleave'].forEach(ev=>b.addEventListener(ev,()=>K[k]=0))});
+$('#start').onclick=()=>go('map');$('#bpin').onclick=()=>go('map');
+$('#bsnd').onclick=e=>{snd=!snd;e.currentTarget.textContent=snd?'♪':'×';e.currentTarget.setAttribute('aria-pressed',!snd)};
+show('home');
+</script>
+</body>
+</html>
